@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Enhanced Header -->
+        <div class="header">
+            <div class="header-controls">
+                <button class="control-btn dark-mode-toggle" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
+                <button class="control-btn export-btn" onclick="exportToCSV()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+                <button class="control-btn clear-btn" onclick="clearAllTransactions()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+            <h1>💰 Personal Finance Tracker</h1>
+            <p>Manage income, expenses & budgets</p>
+        </div>
+
+        <!-- Enhanced Summary Cards -->
+        <div class="summary-cards">
+            <div class="card income">
+                <div class="card-title">Total Income</div>
+                <div class="card-amount" id="totalIncome">₹0.00</div>
+                <div class="card-indicator" id="incomeTrend">📈 No change</div>
+            </div>
+            <div class="card expense">
+                <div class="card-title">Total Expenses</div>
+                <div class="card-amount" id="totalExpense">₹0.00</div>
+                <div class="card-indicator" id="expenseTrend">📈 No change</div>
+            </div>
+            <div class="card balance" id="balanceCard">
+                <div class="card-title">Current Balance</div>
+                <div class="card-amount" id="currentBalance">₹0.00</div>
+                <div class="card-indicator" id="balanceStatus">📊 Stable</div>
+            </div>
+            <div class="card savings">
+                <div class="card-title">Savings Rate</div>
+                <div class="card-amount" id="savingsRate">0%</div>
+                <div class="card-indicator" id="savingsStatus">💰 Start saving</div>
+            </div>
+        </div>
+
+        <!-- Insights Section -->
+        <div class="insights-section" id="insightsSection" style="display: none;">
+            <h2><i class="fas fa-lightbulb"></i> Smart Insights</h2>
+            <div id="insightsContainer"></div>
+        </div>
+
+        <!-- Time Period Selector -->
+        <div class="time-period-selector">
+            <button class="period-btn active" onclick="setTimePeriod('all')">All Time</button>
+            <button class="period-btn" onclick="setTimePeriod('week')">This Week</button>
+            <button class="period-btn" onclick="setTimePeriod('month')">This Month</button>
+            <button class="period-btn" onclick="setTimePeriod('year')">This Year</button>
+        </div>
+
+        <!-- Enhanced Main Content -->
+        <div class="main-content">
+            <div>
+                <!-- Enhanced Form Section -->
+                <div class="form-section">
+                    <h2><i class="fas fa-plus-circle"></i> Add Transaction</h2>
+                    
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="transactionType">
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="amount" placeholder="0.00" step="0.01">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category">
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Education">Education</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="description" placeholder="Enter description">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="date">
+                    </div>
+
+                    <button class="btn" onclick="addTransaction()">
+                        <i class="fas fa-plus"></i> Add Transaction
+                    </button>
+                </div>
+
+                <!-- Budget Tracking -->
+                <div class="budget-section" id="budgetSection" style="display: none;">
+                    <h2><i class="fas fa-target"></i> Budget Tracking</h2>
+                    <div id="budgetContainer"></div>
+                </div>
+
+                <!-- Enhanced Breakdown -->
+                <div class="breakdown-section" id="breakdownSection" style="display: none;">
+                    <h2><i class="fas fa-chart-pie"></i> Expense Breakdown</h2>
+                    <div id="categoryBreakdown"></div>
+                </div>
+            </div>
+
+            <div class="transactions-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;"><i class="fas fa-history"></i> Transaction History</h2>
+                    <span class="transaction-count" id="transactionCount">0 transactions</span>
+                </div>
+
+                <!-- Enhanced Filters -->
+                <div class="filters">
+                    <div class="form-group" style="margin: 0;">
+                        <label>Filter by Type</label>
+                        <select id="filterType" onchange="renderTransactions()">
+                            <option value="all">All</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                        <label>Filter by Category</label>
+                        <select id="filterCategory" onchange="renderTransactions()">
+                            <option value="all">All Categories</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Transactions List -->
+                <div class="transactions-list" id="transactionsList">
+                    <div class="empty-state">
+                        <p><i class="fas fa-inbox" style="font-size: 3em; color: #ccc;"></i></p>
+                        <p>No transactions found</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">Add your first transaction to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="scrollToForm()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- Notification System -->
+    <div id="notification" class="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
